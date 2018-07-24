@@ -166,7 +166,7 @@ def dwell_runtime(line_number, days_to_consider, debug=True):
     f = {'travel_time_secs':['mean','std','size']}
     df_runtime = df.query("route_id=='%d'&is_departure==False" % line_number).groupby(['route_id','direction_id','TIME_PERIOD','stop_id']).agg(f)
     
-    df_min_travel_time = df.query("route_id==22").groupby(['route_id','direction_id','stop_id'])['travel_time_secs'].min().reset_index().rename(columns={'travel_time_secs':'travel_time_min_secs', 'stop_id':'STOP_ID'})
+    df_min_travel_time = df.groupby(['route_id','direction_id','stop_id'])['travel_time_secs'].min().reset_index().rename(columns={'travel_time_secs':'travel_time_min_secs', 'stop_id':'STOP_ID'})
 
     df_results = pd.merge(df_dwell.reset_index(), df_runtime.reset_index())
 
