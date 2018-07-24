@@ -118,15 +118,13 @@ def TIME_PERIOD(x):
     else:
         return 'Neither time zone'
 
-def dwell_runtime(line_number, days_to_consider, debug=True):
-    import glob
-    import pandas
-
+def read_in_dwell_runtime(month):
+    """This function takes a long time to run so it's broken out.  It reads in the swiftly data"""
     frame = pd.DataFrame()
     frames = []
 
     for dir_name in ['00-06','06-12','12_18','18_24']:
-        allFiles = glob.glob('.' + "/swiftly_data/" + dir_name + "/*_10-*.csv")
+        allFiles = glob.glob('.' + "/swiftly_data/" + dir_name + "/*_" + str(month) + "-*.csv")
 #         allFiles = glob.glob('.' + "/swiftly_data/" + dir_name + "/*.csv")
         for file_ in allFiles:
             df = pd.read_csv(file_)
@@ -140,6 +138,12 @@ def dwell_runtime(line_number, days_to_consider, debug=True):
         df['vehicle_id'] = df['vehicle_id'].astype(int)
     except TypeError:
         pass
+
+    return df
+
+
+def dwell_runtime(swiftly_source_data_df, line_number, days_to_consider, debug=True):
+    df = swiftly_source_data_df
 
     df['day_of_month'] = df['time'].dt.day
     df = df.loc[df['day_of_month'].isin(days_to_consider),]
