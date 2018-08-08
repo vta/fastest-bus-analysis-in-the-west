@@ -4,6 +4,8 @@ import glob
 import json
 import time
 import os
+import urllib.request
+
 
 def pull_ridership_by_stop(line_number):
 
@@ -188,3 +190,37 @@ def dwell_runtime(swiftly_source_data_df, line_number, days_to_consider, debug=T
     df_results = df_results.round({'dwell_time_secs_mean': 1, 'dwell_time_secs_std': 1, 'travel_time_secs_mean': 1, 'travel_time_secs_std': 1})
     df_results = pd.merge(df_results,line_table, how='left', left_on = ['route_id','direction_id'], right_on = ['route_id','direction_id'])
     return df_results, df_stop_path_length, df_min_travel_time
+
+# Download the file from `url` and save it locally under `gtfs.zip`, then extract:
+def timepoint_finder(url = 'http://transitfeeds.com/p/vta/45/20170929/download'):
+# Given a certain vta gtfs, if the vta posted a time in the feed, we marked the stop as a timepoint, returns the df.
+
+    def gtfs_downloader(url):
+        file_name = 'gtfs.zip'
+        urllib.request.urlretrieve(url, file_name)
+        import zipfile
+        with zipfile.ZipFile(file_name,"r") as zip_ref:
+            zip_ref.extractall("gtfs/")
+
+    gtfs_downloader(url)
+
+
+    routes = pd.read_csv('gtfs/routes.txt')
+    trips = pd.read_csv('gtfs/trips.txt')
+    st = pd.read_csv('gtfs/stop_times.txt')
+
+
+    count_df = trips[trips.service_id=='Weekdays'].groupby(['route_id','direction_id','shape_id']).count().reset_index()
+    top_shapes = count_df.sort_values('service_id',ascending=False).drop_duplicates(['route_id','direction_id']).sort_values(by=['route_id','direction_id'],ascending=True)
+
+    trip_set = []
+    for i,r in top_shapes.iterrows():
+        shape_id = r['shape_id']
+        trip_set.extend(trips.query("shape_id=='%s'" %(shape_id))['trip_id'].head(1).values)
+
+    trip_subset = trips.loc[trips['trip_id'].isin(trip_set)]
+    timepoints = pd.merge(trip_subset,st.loc[st['arrival_time'].dropna(axis='index').index,], how='left')
+    timepoints = timepoints[['route_id','direction_id','stop_id']]
+    timepoints['timepoint'] = 1
+    timepoints.rename(columns={'stop_id':'STOP_ID'},inplace=True)
+    return timepoints
