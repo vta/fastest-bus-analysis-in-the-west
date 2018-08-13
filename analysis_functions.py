@@ -31,9 +31,7 @@ def pull_ridership_by_stop(line_number):
 
     df = df.query("DAY=='RS_WKDY'&ROUTE_NUMBER=='%d'" % line_number)
 
-    #     pd.pivot_table(df.reset_index(), index=["STOP_ID"],values=["BOARD_ALL",'ALIGHT_ALL']).head()
-
-    rid_line = pd.pivot_table(df.reset_index(), index=["STOP_ID","DIRECTION_NAME","TIME_PERIOD"],values=["SORT_ORDER","BOARD_ALL",'ALIGHT_ALL','LOAD_ALL','AVG_SERVICED','TIME_PERIOD_SORT']).reset_index().sort_values(by=['DIRECTION_NAME','TIME_PERIOD_SORT','SORT_ORDER'])
+    rid_line = df[['STOP_ID','DIRECTION_NAME','TIME_PERIOD','SORT_ORDER','BOARD_ALL','ALIGHT_ALL','LOAD_ALL','AVG_SERVICED','TIME_PERIOD_SORT','TRIPS_ALL','TRIPS_GROSS']].sort_values(by=['DIRECTION_NAME','TIME_PERIOD_SORT','SORT_ORDER'])
     rid_line['ALIGHT_ALL']= rid_line['ALIGHT_ALL'].round(2)
     rid_line['AVG_SERVICED'] = rid_line['AVG_SERVICED'].round(2)
     rid_line['BOARD_ALL'] = rid_line['BOARD_ALL'].round(2)
