@@ -1,0 +1,7 @@
+{
+  "DEFAULT": {
+    "SWIFTLY_API_KEY": "241swiflykey",
+    "MSSQL_USERNAME": "username",
+    "MSSQL_PASSWORD": "Idontknowyourpassworddude"
+  }
+}
