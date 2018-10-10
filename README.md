@@ -19,3 +19,9 @@ Many of the resources and data are internal to the VTA.  Access is via a config 
   (requirements file incoming!)
 1. Open and configure parameters inside the notebook ```make-all-faster-buses-good.ipynb```, produces results intermediate files
 1. Open and run ```fast_csv_and_geospatial_output.ipynb```, this adds additional metrics and produces data attached stops and routes shapes.
+
+## Outputs
+
+[Outputs](https://drive.google.com/open?id=1VPZKqXr_yC8KNpr9z5zdjP1Ay82svuly)
+
+This data are estimates generated through algorithms and summarization can be interpreted many different ways.  This data can also have errors, please be careful when interpreting.
