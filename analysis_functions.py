@@ -4,7 +4,6 @@ import glob
 import json
 import time
 import os
-import urllib.request
 
 
 def pull_ridership_by_stop(line_number):
@@ -118,13 +117,18 @@ def TIME_PERIOD(x):
     else:
         return 'Neither time zone'
 
-def read_in_dwell_runtime(month):
-    """This function takes a long time to run so it's broken out.  It reads in the swiftly data"""
+def read_in_dwell_runtime(month, year = 2018):
+    """This function reads in the swiftly runtinme data from disk"""
+    if month < 10:
+        month = '0' + str(month)
+    else:
+        month = str(month)
+
     frame = pd.DataFrame()
     frames = []
-
+    # all_routes_12_18_12-31-2017.csv
     for dir_name in ['00-06','06-12','12_18','18_24']:
-        allFiles = glob.glob('.' + "/swiftly_data/" + dir_name + "/*_" + str(month) + "-*.csv")
+        allFiles = glob.glob('.' + "/swiftly_data/" + dir_name + "/*_" + month + "-*" + str(year) + ".csv")
 #         allFiles = glob.glob('.' + "/swiftly_data/" + dir_name + "/*.csv")
         for file_ in allFiles:
             df = pd.read_csv(file_)
@@ -151,7 +155,8 @@ def dwell_runtime(swiftly_source_data_df, line_number, days_to_consider, debug=T
     df = df.query("route_id=='%d'" % line_number)
     df_stop_path_length = df.groupby(['route_id','direction_id','stop_id'])['stop_path_length_meters'].max().reset_index().rename(columns={'stop_id':'STOP_ID'})
     
-    df['TIME_PERIOD'] = df['time'].apply(TIME_PERIOD)
+    # df['TIME_PERIOD'] = df['time'].apply(TIME_PERIOD)
+    df.loc[df.index, 'TIME_PERIOD'] = df['time'].apply(TIME_PERIOD)
     
     #Pull out the bottom percentile of results.
     df['dwell_rank'] = df.groupby(['route_id','direction_id','stop_id'])['dwell_time_secs'].rank(pct=True)
@@ -190,17 +195,19 @@ def dwell_runtime(swiftly_source_data_df, line_number, days_to_consider, debug=T
     return df_results, df_stop_path_length, df_min_travel_time
 
 # Download the file from `url` and save it locally under `gtfs.zip`, then extract:
-def timepoint_finder(url = 'http://transitfeeds.com/p/vta/45/20170929/download'):
+def timepoint_finder(transitfeeds_url = 'http://transitfeeds.com/p/vta/45/20170929/download'):
 # Given a certain vta gtfs, if the vta posted a time in the feed, we marked the stop as a timepoint, returns the df.
 
     def gtfs_downloader(url):
+        import urllib.request
+        import zipfile
         file_name = 'gtfs.zip'
         urllib.request.urlretrieve(url, file_name)
-        import zipfile
+        
         with zipfile.ZipFile(file_name,"r") as zip_ref:
             zip_ref.extractall("gtfs/")
 
-    gtfs_downloader(url)
+    gtfs_downloader(transitfeeds_url)
 
 
     routes = pd.read_csv('gtfs/routes.txt')
