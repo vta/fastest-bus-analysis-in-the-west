@@ -6,4 +6,8 @@ This program pulls data from different sources like Swiftly and ridership and ot
 
 Many of the resources and data are internal to the VTA.  Access is via a config file not found in the repo.
 
-[Here](https://public.tableau.com/profile/vivek7797#!/vizhome/stopsandspeedanalyses/Story1) are some tableau visualizations using this data.
+[Tableau visualizations](https://public.tableau.com/profile/vivek7797#!/vizhome/stopsandspeedanalyses/Story1)
+
+[More visualizations](https://public.tableau.com/profile/jason.kim2675#!/vizhome/shared/WW7CX4NR2)
+
+[Presentation](https://docs.google.com/presentation/d/1zFiVGcD00LJvth6HnL4r9Qq3CMS0cn0KEvhP0MtWZcw/edit#slide=id.g42f5f7eb23_0_45)
