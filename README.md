@@ -17,8 +17,8 @@ Many of the resources and data are internal to the VTA.  Access is via a config 
 1. Get a ```config``` file from Vivek/Jason (which has passwords!) as well as Swiftly data and Ridership Data.
 1. Set up a Jupyter Notebook environment in Python 3, install packages for ```make-all-faster-buses-good.ipynb```
   (requirements file incoming!)
-1. Open and configure parameters inside the notebook ```make-all-faster-buses-good.ipynb```, produces results intermediate files
-1. Open and run ```fast_csv_and_geospatial_output.ipynb```, this adds additional metrics and produces data attached stops and routes shapes.
+1. Open and configure parameters inside the notebook ```make-all-faster-buses-good.ipynb```, produces results csvs which are intermediate files
+1. Open and run ```fast_csv_and_geospatial_output.ipynb```, this adds additional metrics and attaches geospatial stops and routes shapes.
 
 ## Outputs
 
